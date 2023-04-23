@@ -7,23 +7,22 @@ import { delRow, sortTable } from "../../slices/peopleSlice";
 import Modal from "../Modal/Modal";
 import { IOneMan, IPeople } from "../../Types/Types";
 
-
 const Table: React.FC<IPeople> = ({ people }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);  //стейт для модального окна
   const [indexToDelete, setIndexToDelete] = useState<number | null>(null); // стейт для выбранной строки для удаления
   const [sortBy, setSortBy] = useState<string | null>(null);//стейт для сортировки по столбцу по алфавиту
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null); //стейт для направления сортировки
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('asc'); //стейт для направления сортировки
 
   const [draggingItem, setDraggingItem] = useState<number | null>(null); // Состояние для элемента, который перемещают
   const [hoveringItem, setHoveringItem] = useState<number | null>(null); // Состояние для элемента, над которым перемещают
 
-
   const [colWidths, setColWidths] = useState<number[]>([]); // состояние для ширины столбцов
   const [rowHeights, setRowHeights] = useState<number[]>([]); // новое состояние для высот строк
 
-
   const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);// ссылки на заголовки столбцов
+
+
 
   useEffect(() => {
     const data = JSON.stringify(people)
@@ -99,11 +98,10 @@ const Table: React.FC<IPeople> = ({ people }) => {
   // ресайз
 
   const handleMouseDown = (e: React.MouseEvent, index: number) => {
-    e.preventDefault();
     e.stopPropagation();
-    const startX = e.clientX;
+    e.preventDefault();
+    const startX = e.clientX+20;
     const startWidth = headerRefs.current[index]?.offsetWidth || 0;
-  
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newWidth = startWidth + moveEvent.clientX - startX;
       setColWidths((prevWidths) => {
@@ -112,38 +110,34 @@ const Table: React.FC<IPeople> = ({ people }) => {
         return newColWidths;
       });
     };
-    const handleMouseUp = (index: number) => {
+    const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", () => handleMouseUp(index));
-      if (sortBy && sortOrder) {
-        dispatch(sortTable([...people].sort(compareValues)));
-      }
+      document.removeEventListener("mouseup", handleMouseUp);
     };
     document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", () => handleMouseUp(index)); //??
+    document.addEventListener("mouseup", handleMouseUp);
   };
-  
-  
+
 
   // функция для изменения высоты строки
 
   function isBorderClicked(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
-    const offset = 3;
+    const offset = 5;
     return (
       Math.abs(event.clientX - rect.left) < offset ||
       Math.abs(event.clientY - rect.bottom) < offset
     );
   }
+
   const handleRowMouseDown = (e: React.MouseEvent, index: number) => {
     if (!isBorderClicked(e.nativeEvent)) return;
-  
     e.preventDefault();
     e.stopPropagation();
     const startY = e.clientY;
     const startHeight = e.currentTarget.getBoundingClientRect().height;
-    
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newHeight = startHeight + moveEvent.clientY - startY;
       setRowHeights((prevHeights) => {
@@ -159,6 +153,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
+
 
   // сохранение высот строк и ширины столбцов в localStorage и установка их при монтировании компонента
   useEffect(() => {
@@ -199,9 +194,8 @@ const Table: React.FC<IPeople> = ({ people }) => {
             <th
               ref={(ref) => (headerRefs.current[0] = ref)}
               style={colStyle(0)}
-              onClick={() => sortByField("name")}
             >
-              Name
+              <span onClick={() => sortByField("name")}>Name</span>
               <div
                 className={styles.resizer}
                 onMouseDown={(e) => handleMouseDown(e, 0)}
@@ -210,9 +204,8 @@ const Table: React.FC<IPeople> = ({ people }) => {
             <th
               ref={(ref) => (headerRefs.current[1] = ref)}
               style={colStyle(1)}
-              onClick={() => sortByField("height")}
             >
-              Height
+              <span onClick={() => sortByField("height")}>Height</span>
               <div
                 className={styles.resizer}
                 onMouseDown={(e) => handleMouseDown(e, 1)}
@@ -221,37 +214,21 @@ const Table: React.FC<IPeople> = ({ people }) => {
             <th
               ref={(ref) => (headerRefs.current[2] = ref)}
               style={colStyle(2)}
-              onClick={() => sortByField("mass")}
             >
-              Mass
-              <div
-                className={styles.resizer}
-                onMouseDown={(e) => handleMouseDown(e, 2)}
+              <span onClick={() => sortByField("mass")}>Mass</span>
+              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 2)}/>
+            </th>
+            <th ref={(ref) => (headerRefs.current[3] = ref)} style={colStyle(3)}
+            >
+              <span onClick={() => sortByField("hair_color")} >Hair Color</span>
+              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 3)}
               />
             </th>
-            <th
-              ref={(ref) => (headerRefs.current[3] = ref)}
-              style={colStyle(3)}
-              onClick={() => sortByField("hair_color")}
-            >
-              Hair Color
-              <div
-                className={styles.resizer}
-                onMouseDown={(e) => handleMouseDown(e, 3)}
-              />
+            <th ref={(ref) => (headerRefs.current[4] = ref)} style={colStyle(4)}>
+              <span onClick={() => sortByField("skin_color")}>Skin Color</span>
+              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 4)} />
             </th>
-            <th
-              ref={(ref) => (headerRefs.current[4] = ref)}
-              style={colStyle(4)}
-              onClick={() => sortByField("skin_color")}
-            >
-              Skin Color
-              <div
-                className={styles.resizer}
-                onMouseDown={(e) => handleMouseDown(e, 4)}
-              />
-            </th>
-            <th className={styles.del}></th>
+            <th>Удалить строку</th>
           </tr>
         </thead>
         <tbody>

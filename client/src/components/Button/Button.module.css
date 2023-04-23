@@ -7,10 +7,14 @@
   margin-bottom: 20px;
   padding: 10px 20px;
   text-transform: uppercase;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
 .button:hover {
   background-color: #000;
   color: #ffffff;
+}
+
+.button:disabled {
+  color: red
 }

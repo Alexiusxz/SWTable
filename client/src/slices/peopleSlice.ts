@@ -20,12 +20,14 @@ export const peopleSlice = createSlice({
       state.people.splice(action.payload,1);
     },
     sortTable: (state, action: PayloadAction<IOneMan[]>) => {
-      state.people=[...action.payload];
+       state.people=[...action.payload];
     },
-    
+    addPerson: (state, action: PayloadAction<IOneMan>) => {
+       state.people.push(action.payload);
+    },
   },
 });
 
-export const { getPeople, clearStore, delRow, sortTable  } = peopleSlice.actions;
+export const { getPeople, clearStore, delRow, sortTable, addPerson  } = peopleSlice.actions;
 
 export default peopleSlice.reducer;

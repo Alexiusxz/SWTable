@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import peopleReducer from "../slices/peopleSlice";
+import pagesReducer from '../slices/pagesSlice'
 
 const store = configureStore({
   reducer: {
     people: peopleReducer,
+    pages:pagesReducer
   },
 });
 
