@@ -19,9 +19,13 @@ export const peopleSlice = createSlice({
     delRow: (state, action: PayloadAction<number>) => {
       state.people.splice(action.payload,1);
     },
+    sortTable: (state, action: PayloadAction<IOneMan[]>) => {
+      state.people=[...action.payload];
+    },
+    
   },
 });
 
-export const { getPeople, clearStore, delRow  } = peopleSlice.actions;
+export const { getPeople, clearStore, delRow, sortTable  } = peopleSlice.actions;
 
 export default peopleSlice.reducer;

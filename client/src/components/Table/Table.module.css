@@ -38,3 +38,11 @@
 .del {
   width: 5%;
 }
+
+.table tbody tr.dragging {
+  opacity: 0.5;
+}
+
+.table tbody tr.dragover {
+  background-color: #dc2525;
+}

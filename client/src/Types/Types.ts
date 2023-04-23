@@ -30,8 +30,8 @@ export interface IPeople {
 
 export interface IOneMan {
     name: string;
-    height: string;
-    mass: string;
+    height: number;
+    mass: number;
     hair_color: string;
     skin_color: string;
 }
