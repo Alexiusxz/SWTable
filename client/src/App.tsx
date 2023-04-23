@@ -35,6 +35,8 @@ function App(): JSX.Element {
   function clearTable() {
     dispatch(clearStore());
     localStorage.removeItem('swapi');
+    localStorage.removeItem('rowHeights');
+    localStorage.removeItem('colWidths');
   }
 
   return (

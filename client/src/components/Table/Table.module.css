@@ -3,6 +3,7 @@
   width: 100%;
   margin-bottom: 20px;
   font-size: 16px;
+  border: 1px solid #000; 
 }
 
 .table thead th {
@@ -11,12 +12,14 @@
   font-size: 18px;
   text-align: left;
   padding: 12px 10px;
-  width: 19%;
+  position: relative;
+  border: 1px solid #000; 
 }
 
 .table tbody td {
   border-bottom: 1px solid #e5e5e5;
   padding: 10px;
+  border: 1px solid #000; 
 }
 
 .table tbody td:first-child {
@@ -35,9 +38,10 @@
   text-align: center;
   vertical-align: middle;
 }
-.del {
+
+/* .del {
   width: 5%;
-}
+} */
 
 .table tbody tr.dragging {
   opacity: 0.5;
@@ -45,4 +49,19 @@
 
 .table tbody tr.dragover {
   background-color: #dc2525;
+}
+
+.resizer {
+  display: inline-block;
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -5px;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.resizer:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
