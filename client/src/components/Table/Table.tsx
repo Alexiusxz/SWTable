@@ -1,17 +1,25 @@
-import React, { useState } from "react";
-import { IPeople } from '../../Types/Types';
+import React, {  useLayoutEffect, useState } from "react";
+
 import { v4 as uuidv4 } from 'uuid';
 import styles from './Table.module.css';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createPortal } from 'react-dom';
 import { delRow } from "../../slices/peopleSlice";
 import Modal from "../Modal/Modal";
+import { RootState } from "../../store/store";
 
 
-const Table: React.FC<IPeople> = ({ people }) => {
+
+const Table: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [indexToDelete, setIndexToDelete] = useState<number | null>(null);
+  const people = useSelector((state: RootState) => state.people.people)
+
+  useLayoutEffect(()=> {
+    const data = JSON.stringify(people)
+    if (people && people.length) {localStorage.setItem('swapi', data)}
+  },[people])
 
   function deleteRow(index: number) {
     setIndexToDelete(index);
@@ -22,13 +30,11 @@ const Table: React.FC<IPeople> = ({ people }) => {
     setIsModalOpen(false);
   }
 
-  async function confirmDel() {
-    indexToDelete !== null && 
-    await dispatch(delRow(indexToDelete))
+  function confirmDel() {
+    indexToDelete !== null &&
+    dispatch(delRow(indexToDelete))
     setIsModalOpen(false);
     setIndexToDelete(null);
-    const data = JSON.stringify(people)
-    localStorage.setItem('swapi', data)
   }
   return (
     <>
