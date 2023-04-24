@@ -22,8 +22,6 @@ const Table: React.FC<IPeople> = ({ people }) => {
 
   const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);// ссылки на заголовки столбцов
 
-
-
   useEffect(() => {
     const data = JSON.stringify(people)
     if (people && people.length) localStorage.setItem('swapi', data)
@@ -228,7 +226,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
               <span onClick={() => sortByField("skin_color")}>Skin Color</span>
               <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 4)} />
             </th>
-            <th>Удалить строку</th>
+            <th>Delete line</th>
           </tr>
         </thead>
         <tbody>
@@ -255,7 +253,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
             ))
           ) : (
             <tr>
-              <td className={styles.plug} colSpan={6}>Нет данных для отображения</td>
+              <td className={styles.plug} colSpan={6}>Nothing to show</td>
             </tr>
           )}
         </tbody>

@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import React, { useEffect, useState } from 'react';
-import Button from '../components/Button/Button';
-import Table from '../components/Table/Table';
+import Button from '../../components/Button/Button';
+import Table from '../../components/Table/Table';
 import ky from 'ky'
 import { useDispatch, useSelector } from 'react-redux';
-import { clearStore, getPeople } from '../slices/peopleSlice';
-import { IData, IOneMan } from '../Types/Types';
-import Loader from '../components/Loader/Loader';
-import { RootState } from '../store/store';
-import { setLinks } from '../slices/pagesSlice';
+import { clearStore, getPeople } from '../../slices/peopleSlice';
+import { IData, IOneMan } from '../../Types/Types';
+import Loader from '../../components/Loader/Loader';
+import { RootState } from '../../store/store';
+import { setLinks } from '../../slices/pagesSlice';
 import { Link } from 'react-router-dom';
+import styles from './Main.module.css';
 
 
 function Main(): JSX.Element {
@@ -54,7 +55,7 @@ function Main(): JSX.Element {
       <Button onClickFunc={clearTable} title={'Clear table'} />
       <Button onClickFunc={() => getPeopleOnClick(links.previous)} title={'back'} link={links.previous} />
       <Button onClickFunc={() => getPeopleOnClick(links.next)} title={'next'} link={links.next} />
-      <Link to='/form'>Link to form</Link>
+      <Link to='/form' className={styles.link}>Link to form</Link>
       {loader ? <Loader /> : <Table people={people} />}
     </>
   );

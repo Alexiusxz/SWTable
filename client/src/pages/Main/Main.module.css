@@ -1,0 +1,17 @@
+.link {
+  background-color: transparent;
+  border: none;
+  color: #000000;
+  cursor:pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  transition: all 0.5s ease;
+  text-decoration: none;
+  }
+  
+  .link:hover {
+  background-color: #000;
+  color: #ffffff;
+  }
