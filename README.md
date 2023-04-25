@@ -1,10 +1,8 @@
 # SWTable
 
 Описание проекта: Таблица с данными из https://swapi.dev/ 
-![Alt Text](../SWTable/client/public/img/dv.png)
-
 <p align="center">
-  <img src="../SWTable/client/public/img/dv.png">
+  <img src="https://www.iconninja.com/files/774/315/722/sith-darth-vader-darth-vader-star-wars-lord-sith-strar-wars-lord-sith-icon.png">
 </p>
 
 ## Технологии
