@@ -9,6 +9,8 @@ body {
   background-size: cover;
   background-position: center bottom;
   background-attachment: fixed;
+  max-width: 90%;
+  margin: auto;  
 }
 
 code {

@@ -22,6 +22,7 @@
   border-bottom: 1px solid #e5e5e5;
   padding: 10px;
   border: 1px solid #000; 
+  cursor: pointer;
 }
 
 .table tbody td:first-child {
@@ -83,4 +84,7 @@
 .sortedColumn {
   color: #ff9800; 
   font-weight: bold;
+}
+span {
+  cursor: pointer;
 }
