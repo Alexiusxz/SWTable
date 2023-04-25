@@ -1,9 +1,10 @@
 # SWTable
 
-Описание проекта: Таблица с данными из https://swapi.dev/ 
 <p align="center">
   <img src="https://www.iconninja.com/files/774/315/722/sith-darth-vader-darth-vader-star-wars-lord-sith-strar-wars-lord-sith-icon.png">
 </p>
+
+Описание проекта: Работа с таблицей с данными из https://swapi.dev/ 
 
 ## Технологии
 
