@@ -80,11 +80,7 @@
   cursor: row-resize;
 }
 
-
-/* .table tbody tr.dragging td {
-  visibility: hidden;
+.sortedColumn {
+  color: #ff9800; 
+  font-weight: bold;
 }
-
-.table tbody tr:not(.dragging) td {
-  visibility: visible;
-} */

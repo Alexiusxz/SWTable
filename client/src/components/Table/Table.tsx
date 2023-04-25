@@ -103,7 +103,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
   const handleMouseDown = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     e.preventDefault();
-    const startX = e.clientX ;
+    const startX = e.clientX;
     const startWidth = colWidths[index] || headerRefs.current[index]?.offsetWidth || 0;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -114,7 +114,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
         return newColWidths;
       });
     };
-    
+
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -125,7 +125,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
 
 
   // функция для изменения высоты строки
-  
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -139,13 +139,13 @@ const Table: React.FC<IPeople> = ({ people }) => {
       }
     };
     document.addEventListener("mousemove", handleMouseMove);
-  
+
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
-  
-  
+
+
   function isBorderClicked(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
@@ -154,17 +154,17 @@ const Table: React.FC<IPeople> = ({ people }) => {
       Math.abs(event.clientX - (rect.left + rect.width)) < offset;
     const isRowBorderClicked =
       Math.abs(event.clientY - (rect.top + rect.height)) < offset;
-  
+
     return { isColBorderClicked, isRowBorderClicked };
   }
-  
+
 
   const handleRowMouseDown = (e: React.MouseEvent, index: number) => {
     if (!isBorderClicked(e.nativeEvent).isRowBorderClicked) return;
     e.preventDefault();
     const startY = e.clientY;
     const startHeight = e.currentTarget.getBoundingClientRect().height;
-  
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newHeight = startHeight + moveEvent.clientY - startY;
       setRowHeights((prevHeights) => {
@@ -180,7 +180,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-  
+
 
   // сохранение высот строк и ширины столбцов в localStorage и установка их при монтировании компонента
   useEffect(() => {
@@ -219,19 +219,21 @@ const Table: React.FC<IPeople> = ({ people }) => {
         <thead>
           <tr>
             {people.length ? Object.keys(people[0]).map((el, i) =>
-              
-                <th
-                  ref={(ref) => (headerRefs.current[i] = ref)}
-                  style={colStyle(i)}
-                  key={uuidv4()}
-                >
-                  <span onClick={() => sortByField(el)}>{el}</span>
-                  <div
-                    className={styles.resizer}
-                    onMouseDown={(e) => handleMouseDown(e, i)}
-                  />
-                </th>
-              
+              <th
+                ref={(ref) => (headerRefs.current[i] = ref)}
+                style={colStyle(i)}
+                key={uuidv4()}
+                className={sortBy?.toString() === el.toString() ? styles.sortedColumn : ""}
+              >
+                <span
+                  className={sortBy?.toString() === el.toString() ? styles.sortedColumn : ""}
+                  onClick={() => sortByField(el)}>{el}
+                </span>
+                <div
+                  className={styles.resizer}
+                  onMouseDown={(e) => handleMouseDown(e, i)}
+                />
+              </th>
             ) : <></>}
             {people.length ? <th>Delete Line</th> : <></>}
           </tr>
