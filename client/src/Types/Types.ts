@@ -27,7 +27,6 @@ export interface IPeople {
   people: IOneMan[];
 }
 
-
 export interface IOneMan {
     name: string;
     height: number | string;

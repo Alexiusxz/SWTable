@@ -4,7 +4,7 @@ import { AppDispatch } from '../store/store';
 import ky from 'ky';
 import { IData, IOneMan } from '../Types/Types';
 
-// функция получения первичных данных
+// функция получения данных
 export const getPeopleOnClick = (link: string | null = 'https://swapi.dev/api/people/') => (dispatch: AppDispatch) => { 
   dispatch(setLoading(true));
   ky.get(link ? link : 'https://swapi.dev/api/people/')

@@ -2,7 +2,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IPage } from "../Types/Types";
 
-
 const initialState: IPage = {
   next: null,
   previous: null,

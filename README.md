@@ -1,6 +1,11 @@
 # SWTable
 
+<p align="center">
+  <img src="../SWTable/client/public/img/dv.png">
+</p>
+
 Описание проекта: Таблица с данными из https://swapi.dev/ 
+
 
 ## Технологии
 
