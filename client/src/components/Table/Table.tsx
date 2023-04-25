@@ -9,16 +9,16 @@ import { IOneMan, IPeople } from "../../Types/Types";
 
 const Table: React.FC<IPeople> = ({ people }) => {
   const dispatch = useDispatch();
-  const [isModalOpen, setIsModalOpen] = useState(false);  //стейт для модального окна
-  const [indexToDelete, setIndexToDelete] = useState<number | null>(null); // стейт для выбранной строки для удаления
-  const [sortBy, setSortBy] = useState<string | null>(null);//стейт для сортировки по столбцу по алфавиту
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('asc'); //стейт для направления сортировки
+  const [isModalOpen, setIsModalOpen] = useState(false);//состояние для модального окна
+  const [indexToDelete, setIndexToDelete] = useState<number | null>(null); // состояние для выбранной строки для удаления
+  const [sortBy, setSortBy] = useState<string | null>(null);//состояние для сортировки по столбцу по алфавиту
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>('asc'); //состояние для направления сортировки
 
   const [draggingItem, setDraggingItem] = useState<number | null>(null); // Состояние для элемента, который перемещают
   const [hoveringItem, setHoveringItem] = useState<number | null>(null); // Состояние для элемента, над которым перемещают
 
   const [colWidths, setColWidths] = useState<number[]>([]); // состояние для ширины столбцов
-  const [rowHeights, setRowHeights] = useState<number[]>([]); // новое состояние для высот строк
+  const [rowHeights, setRowHeights] = useState<number[]>([]); // состояние для высот строк
 
   const headerRefs = useRef<(HTMLTableCellElement | null)[]>([]);// ссылки на заголовки столбцов
 
@@ -27,21 +27,27 @@ const Table: React.FC<IPeople> = ({ people }) => {
     if (people && people.length) localStorage.setItem('swapi', data)
   }, [people])
 
+
+  // функция для удаления строки(открытия модального окна)
   function deleteRow(index: number) {
     setIndexToDelete(index);
     setIsModalOpen(true);
   }
 
-  function closeModal() {
-    setIsModalOpen(false);
-  }
-
+  // функция для подтверждения удаления строки(закрытие модального окна модального окна)
   function confirmDel() {
-    indexToDelete !== null &&
-      dispatch(delRow(indexToDelete))
+    indexToDelete !== null && dispatch(delRow(indexToDelete))
     setIsModalOpen(false);
     setIndexToDelete(null);
   }
+
+  // сортировка
+  useEffect(() => {
+    if (sortBy) {
+      const sort = [...people].sort(compareValues);
+      dispatch(sortTable(sort));
+    }
+  }, [sortBy, sortOrder]);
 
   function compareValues(a: IOneMan, b: IOneMan) {
     if (a[sortBy as keyof IOneMan] < b[sortBy as keyof IOneMan]) {
@@ -53,13 +59,12 @@ const Table: React.FC<IPeople> = ({ people }) => {
     return 0;
   }
 
-  function sortByField(field: keyof IOneMan) {
+  function sortByField(field: string) {
     const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
     setSortOrder(newSortOrder);
     setSortBy(field);
-    const sort = [...people].sort(compareValues)
-    dispatch(sortTable(sort));
   }
+
   // drag & drop
   function handleDragStart(e: React.DragEvent<HTMLTableRowElement>, index: number) {
     e.dataTransfer.effectAllowed = "move";
@@ -98,8 +103,9 @@ const Table: React.FC<IPeople> = ({ people }) => {
   const handleMouseDown = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     e.preventDefault();
-    const startX = e.clientX+20;
-    const startWidth = headerRefs.current[index]?.offsetWidth || 0;
+    const startX = e.clientX ;
+    const startWidth = colWidths[index] || headerRefs.current[index]?.offsetWidth || 0;
+
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newWidth = startWidth + moveEvent.clientX - startX;
       setColWidths((prevWidths) => {
@@ -108,6 +114,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
         return newColWidths;
       });
     };
+    
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -118,24 +125,46 @@ const Table: React.FC<IPeople> = ({ people }) => {
 
 
   // функция для изменения высоты строки
-
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const { isColBorderClicked, isRowBorderClicked } = isBorderClicked(e);
+      if (isColBorderClicked) {
+        target.style.cursor = "col-resize";
+      } else if (isRowBorderClicked) {
+        target.style.cursor = "row-resize";
+      } else {
+        target.style.cursor = "";
+      }
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+  
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+  
+  
   function isBorderClicked(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const rect = target.getBoundingClientRect();
     const offset = 5;
-    return (
-      Math.abs(event.clientX - rect.left) < offset ||
-      Math.abs(event.clientY - rect.bottom) < offset
-    );
+    const isColBorderClicked =
+      Math.abs(event.clientX - (rect.left + rect.width)) < offset;
+    const isRowBorderClicked =
+      Math.abs(event.clientY - (rect.top + rect.height)) < offset;
+  
+    return { isColBorderClicked, isRowBorderClicked };
   }
+  
 
   const handleRowMouseDown = (e: React.MouseEvent, index: number) => {
-    if (!isBorderClicked(e.nativeEvent)) return;
+    if (!isBorderClicked(e.nativeEvent).isRowBorderClicked) return;
     e.preventDefault();
-    e.stopPropagation();
     const startY = e.clientY;
     const startHeight = e.currentTarget.getBoundingClientRect().height;
-
+  
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newHeight = startHeight + moveEvent.clientY - startY;
       setRowHeights((prevHeights) => {
@@ -151,7 +180,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-
+  
 
   // сохранение высот строк и ширины столбцов в localStorage и установка их при монтировании компонента
   useEffect(() => {
@@ -173,7 +202,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
     localStorage.setItem("colWidths", JSON.stringify(colWidths));
   }, [colWidths]);
 
-  // встроенные стили для изменения размеров столбцов и строк
+  // встроенные стили для изменения размеров столбцов 
   const colStyle = (index: number) => ({
     width: colWidths[index] ? `${colWidths[index]}px` : undefined,
     minWidth: "50px",
@@ -189,44 +218,22 @@ const Table: React.FC<IPeople> = ({ people }) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th
-              ref={(ref) => (headerRefs.current[0] = ref)}
-              style={colStyle(0)}
-            >
-              <span onClick={() => sortByField("name")}>Name</span>
-              <div
-                className={styles.resizer}
-                onMouseDown={(e) => handleMouseDown(e, 0)}
-              />
-            </th>
-            <th
-              ref={(ref) => (headerRefs.current[1] = ref)}
-              style={colStyle(1)}
-            >
-              <span onClick={() => sortByField("height")}>Height</span>
-              <div
-                className={styles.resizer}
-                onMouseDown={(e) => handleMouseDown(e, 1)}
-              />
-            </th>
-            <th
-              ref={(ref) => (headerRefs.current[2] = ref)}
-              style={colStyle(2)}
-            >
-              <span onClick={() => sortByField("mass")}>Mass</span>
-              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 2)}/>
-            </th>
-            <th ref={(ref) => (headerRefs.current[3] = ref)} style={colStyle(3)}
-            >
-              <span onClick={() => sortByField("hair_color")} >Hair Color</span>
-              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 3)}
-              />
-            </th>
-            <th ref={(ref) => (headerRefs.current[4] = ref)} style={colStyle(4)}>
-              <span onClick={() => sortByField("skin_color")}>Skin Color</span>
-              <div className={styles.resizer} onMouseDown={(e) => handleMouseDown(e, 4)} />
-            </th>
-            <th>Delete line</th>
+            {people.length ? Object.keys(people[0]).map((el, i) =>
+              
+                <th
+                  ref={(ref) => (headerRefs.current[i] = ref)}
+                  style={colStyle(i)}
+                  key={uuidv4()}
+                >
+                  <span onClick={() => sortByField(el)}>{el}</span>
+                  <div
+                    className={styles.resizer}
+                    onMouseDown={(e) => handleMouseDown(e, i)}
+                  />
+                </th>
+              
+            ) : <></>}
+            {people.length ? <th>Delete Line</th> : <></>}
           </tr>
         </thead>
         <tbody>
@@ -243,12 +250,12 @@ const Table: React.FC<IPeople> = ({ people }) => {
                 onDrop={(e) => handleDrop(e)}
                 onDragEnd={handleDragEnd}
               >
-                <td>{item.name}</td>
-                <td>{item.height}</td>
-                <td>{item.mass}</td>
-                <td>{item.hair_color}</td>
-                <td>{item.skin_color}</td>
-                <td><button onClick={() => deleteRow(index)}>x</button></td>
+                <td>{item.name}<div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
+                <td>{item.height}<div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
+                <td>{item.mass}<div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
+                <td>{item.hair_color}<div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
+                <td>{item.skin_color}<div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
+                <td><button onClick={() => deleteRow(index)}>x</button><div className={styles.rowResizerInvisible} onMouseDown={(e) => handleRowMouseDown(e, index)}></div></td>
               </tr>
             ))
           ) : (
@@ -259,7 +266,7 @@ const Table: React.FC<IPeople> = ({ people }) => {
         </tbody>
       </table>
       {isModalOpen && createPortal(
-        <Modal isOpen={isModalOpen} onClose={closeModal} onDelete={confirmDel} />,
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onDelete={confirmDel} />,
         document.getElementById('modal-root') || document.createElement('div')
       )}
     </>

@@ -1,9 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IOneMan, IPeople } from "../Types/Types";
 
-
-const initialState: IPeople = {
-  people:[]
+interface PeopleState extends IPeople {
+  loading: boolean;
+}
+const initialState: PeopleState = {
+  people: [],
+  loading: false,
 };
 
 export const peopleSlice = createSlice({
@@ -11,23 +14,33 @@ export const peopleSlice = createSlice({
   initialState,
   reducers: {
     getPeople: (state, action: PayloadAction<IOneMan[]>) => {
-      state.people=[...action.payload];
+      state.people = [...action.payload];
     },
     clearStore: (state) => {
-      state.people=[];
+      state.people = [];
     },
     delRow: (state, action: PayloadAction<number>) => {
-      state.people.splice(action.payload,1);
+      state.people.splice(action.payload, 1);
     },
     sortTable: (state, action: PayloadAction<IOneMan[]>) => {
-       state.people=[...action.payload];
+      state.people = [...action.payload];
     },
     addPerson: (state, action: PayloadAction<IOneMan>) => {
-       state.people.push(action.payload);
+      state.people.push(action.payload);
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { getPeople, clearStore, delRow, sortTable, addPerson  } = peopleSlice.actions;
+export const {
+  getPeople,
+  clearStore,
+  delRow,
+  sortTable,
+  addPerson,
+  setLoading,
+} = peopleSlice.actions;
 
 export default peopleSlice.reducer;

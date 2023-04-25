@@ -46,6 +46,20 @@ input::placeholder {
   transition: all 0.3s ease;
 }
 
+.backButton {
+  padding: 10px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #feda4a;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
 .successMessage {
   padding: 15px;
   margin-bottom: 20px;

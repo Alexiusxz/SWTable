@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IPage } from "../Types/Types";
 
@@ -14,9 +15,15 @@ export const pagesSlice = createSlice({
     setLinks: (state, action: PayloadAction<IPage>) => {
       return state=action.payload;
     },
+    delLinks: (state) => {
+      return state = {
+        next: null,
+        previous: null,
+      }
+    },
   },
 });
 
-export const { setLinks } = pagesSlice.actions;
+export const { setLinks, delLinks } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

@@ -45,9 +45,13 @@ const MyForm: React.FC = () => {
     }, 2000);
   };
 
+  const onBackButtonClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className={styles.container}>
-      {submitted && <div className={styles.successMessage}>Форма успешно заполнена!</div>}
+      {submitted && <div className={styles.successMessage}>Form completed successfully!</div>}
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <input {...register('name', { required: true, minLength: 2 })} placeholder="Name" />
         {errors.name?.type === "required" && (
@@ -98,14 +102,20 @@ const MyForm: React.FC = () => {
             Skin Color must be at least 2 characters
           </span>
         )}
-
+      <button
+        type="button"
+        className={styles.backButton}
+        onClick={onBackButtonClick}
+      >
+        Back
+      </button>
         <button
           type="submit"
           className={styles.button}
           style={buttonStyle}
           onMouseEnter={handleMouseEnter}
         >
-          Отправить
+          Submit
         </button>
       </form>
     </div>
